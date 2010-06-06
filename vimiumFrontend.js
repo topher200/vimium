@@ -365,16 +365,14 @@ function enterInsertMode() {
   insertMode = true;
 
   path = "images/insert_icon.png";
-  changeIconPort = chrome.extension.connect({ name: "changeIcon" });
-  changeIconPort.postMessage({ path: path });
+  chrome.extension.sendRequest({ handler: "changeIcon", path: path });
 }
 
 function exitInsertMode() {
   insertMode = false;
 
   path = "images/normal_icon.png";
-  changeIconPort = chrome.extension.connect({ name: "changeIcon" });
-  changeIconPort.postMessage({ path: path });
+  chrome.extension.sendRequest({ handler: "changeIcon", path: path });
 }
 
 function handleKeyCharForFindMode(keyChar) {

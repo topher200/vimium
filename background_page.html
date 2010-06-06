@@ -61,10 +61,10 @@
     getZoomLevel:         getZoomLevel,
     saveZoomLevel:        saveZoomLevel,
     getSetting:           getSetting,
-    changeIcon:           changeIcon
   };
 
   var sendRequestHandlers = {
+    changeIcon: changeIcon,
     getCompletionKeys: getCompletionKeys,
     getLinkHintCss: getLinkHintCss,
     openOptionsPageInNewTab: openOptionsPageInNewTab,
@@ -104,6 +104,7 @@
     var senderTabId = sender.tab ? sender.tab.id : null;
     if (sendRequestHandlers[request.handler])
       sendResponse(sendRequestHandlers[request.handler](request, sender));
+    sendResponse({});
   });
 
   function handleReturnScrollPosition(args) {
@@ -328,8 +329,8 @@
   /*
    * Used by the content scripts to change the displayed icon
    */
-  function changeIcon(args) {
-    chrome.browserAction.setIcon(args);
+  function changeIcon(request) {
+    chrome.browserAction.setIcon({ path: request.path });
   }
 
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
