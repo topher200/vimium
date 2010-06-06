@@ -60,7 +60,8 @@
     getCurrentTabUrl:     getCurrentTabUrl,
     getZoomLevel:         getZoomLevel,
     saveZoomLevel:        saveZoomLevel,
-    getSetting:           getSetting
+    getSetting:           getSetting,
+    changeIcon:           changeIcon
   };
 
   var sendRequestHandlers = {
@@ -323,6 +324,13 @@
     openTabs[tab.id].scrollY = scrollY;
   }
 
+
+  /*
+   * Used by the content scripts to change the displayed icon
+   */
+  function changeIcon(args) {
+    chrome.browserAction.setIcon(args);
+  }
 
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (changeInfo.status != "loading") { return; } // only do this once per URL change

@@ -363,12 +363,18 @@ function isEditable(target) {
 
 function enterInsertMode() {
   insertMode = true;
-  HUD.show("Insert mode");
+
+  path = "images/insert_icon.png";
+  changeIconPort = chrome.extension.connect({ name: "changeIcon" });
+  changeIconPort.postMessage({ path: path });
 }
 
 function exitInsertMode() {
   insertMode = false;
-  HUD.hide();
+
+  path = "images/normal_icon.png";
+  changeIconPort = chrome.extension.connect({ name: "changeIcon" });
+  changeIconPort.postMessage({ path: path });
 }
 
 function handleKeyCharForFindMode(keyChar) {
