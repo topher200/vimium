@@ -23,6 +23,22 @@ function mapKeyToCommand(key, command) {
 
 function unmapKey(key) { delete keyToCommandRegistry[key]; }
 
+/* Lower-case the appropriate portions of named keys.
+ *
+ * A key name is one of three forms exemplified by <c-a> <left> or <c-f12>
+ * (prefixed normal key, named key, or prefixed named key). Internally, for
+ * simplicity, we would like prefixes and key names to be lowercase, though
+ * humans may prefer other forms <Left> or <C-a>.
+ * On the other hand, <c-a> and <c-A> are different named keys - for one of
+ * them you have to press "shift" as well.
+ */
+function normalizeKey(key) {
+    return key.replace(/<[acm]-/ig, function(match){ return match.toLowerCase(); })
+              .replace(/<([acm]-)?([a-zA-Z0-9]{2,5})>/g, function(match, optionalPrefix, keyName){
+                  return "<" + ( optionalPrefix ? optionalPrefix : "") + keyName.toLowerCase() + ">";
+              });
+}
+
 function parseCustomKeyMappings(customKeyMappings) {
   lines = customKeyMappings.split("\n");
 
@@ -34,7 +50,7 @@ function parseCustomKeyMappings(customKeyMappings) {
 
     if (lineCommand == "map") {
       if (split_line.length != 3) { continue; }
-      var key = split_line[1];
+      var key = normalizeKey(split_line[1]);
       var vimiumCommand = split_line[2];
 
       if (!availableCommands[vimiumCommand]) { continue }
@@ -45,7 +61,7 @@ function parseCustomKeyMappings(customKeyMappings) {
     else if (lineCommand == "unmap") {
       if (split_line.length != 2) { continue; }
 
-      var key = split_line[1];
+      var key = normalizeKey(split_line[1]);
 
       console.log("Unmapping", key);
       unmapKey(key);
